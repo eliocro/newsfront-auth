@@ -54,7 +54,7 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
 
     logout: function () {
       clearCookie()
-      setUser(undefined);
+      setUser();
     },
 
     init: function () {
