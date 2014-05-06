@@ -1,0 +1,40 @@
+img {
+  max-width: 100%;
+}
+
+p.teaser {
+  color: #888;
+  font-size: 1.2em;
+  font-style: italic;
+}
+
+div[ng-view] {
+  max-width: 900px;
+}
+
+.bs-callout {
+  margin: 20px 0;
+  padding: 20px;
+  border-left: 3px solid #eee;
+}
+.bs-callout-danger {
+  background-color: #fdf7f7;
+  border-color: #d9534f;
+}
+.bs-callout h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+.bs-callout-danger h4 {
+  color: #d9534f;
+}
+
+.thumbnail {
+  float: right;
+  width: 220px;
+}
+.thumbnail img {
+  float: left;
+  width: 80px;
+  margin-right: 10px;
+}

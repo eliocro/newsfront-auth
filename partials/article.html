@@ -1,0 +1,17 @@
+
+<h1>{{article.title}}</h1>
+<p class="teaser">{{article.teaser}}</p>
+
+<span ng-show="article.premium" class="label label-success">Premium</span>
+<br><br>
+
+<div ng-bind-html="article.content_html"></div>
+
+<div ng-show="article.premium && !article.content_html" class="bs-callout bs-callout-danger">
+  <h4>This is a premium article.</h4>
+  <p>To read it, please login first.</p>
+</div>
+
+
+<a href="#/">&lt; Back to all articles</a>
+<br><br><br>
