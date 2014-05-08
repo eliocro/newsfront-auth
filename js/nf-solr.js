@@ -11,8 +11,8 @@ angular.module('nf-solr', ['solstice'])
       var d = $q.defer();
       var options = {
         rows: count || 10,
-        q: 'bundle:article',
-        sort: 'created desc'
+        q: 'bundle:article AND status:true',
+        sort: 'promote desc, created desc'
       };
       Solstice.search(options)
       .then(function (data) {
