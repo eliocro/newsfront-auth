@@ -2,7 +2,7 @@
 angular.module('nf-solr', ['solstice'])
 
 .config(function (SolsticeProvider) {
-  SolsticeProvider.setEndpoint('http://index.websolr.com/solr/1e6f37c54b7');
+  SolsticeProvider.setEndpoint('http://solr1.newsfront.no:8080/solr/newsfront-frontmag');
 })
 
 .factory('nfSolr', function (Solstice, $q) {
