@@ -3,7 +3,7 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
 
 .run(function () {
   console.log('Initialize OAuth');
-  OAuth.initialize('cfD4OMAFLU63teGeMOAuxoGdtWg');
+  OAuth.initialize('zwjiwmCkqZA1pefdZF1eEUo7zDI');
 })
 
 .factory('nfAuth', function ($rootScope, $route, $cookieStore) {
