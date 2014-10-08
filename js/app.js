@@ -2,7 +2,7 @@ window.angular.module('nftest', ['ngRoute', 'ngSanitize', 'nf-solr', 'nf-auth'])
 
 .config(function ($httpProvider, $locationProvider, $routeProvider) {
   $httpProvider.defaults.useXDomain = true;
-  $locationProvider.html5Mode(true);
+  // $locationProvider.html5Mode(true);
   $locationProvider.hashPrefix('!');
 
   $routeProvider

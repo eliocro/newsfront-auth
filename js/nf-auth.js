@@ -1,9 +1,4 @@
 
-function isIE() {
-  return ((navigator.appName === 'Microsoft Internet Explorer') || ((navigator.appName === 'Netscape') &&
-  (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) !== null)));
-}
-
 angular.module('nf-auth', ['ngCookies', 'ngRoute'])
 
 .run(function () {
@@ -12,6 +7,11 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
 })
 
 .factory('nfAuth', function ($rootScope, $route, $cookieStore, $location) {
+
+  function isIE() {
+    return ((navigator.appName === 'Microsoft Internet Explorer') || ((navigator.appName === 'Netscape') &&
+    (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) !== null)));
+  }
 
   function setUser (user) {
     console.log('User', user);
@@ -57,7 +57,7 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
     ghLogin: function () {
       if(isIE()) {
         clearCookie();
-        OAuth.redirect('github', 'http://' + $location.host() + '/oauth?next=' + encodeURIComponent($location.path()));
+        OAuth.redirect('github', 'http://' + $location.host() + '/#!/oauth?next=' + encodeURIComponent($location.path()));
         return;
       }
 
