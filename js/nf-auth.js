@@ -1,5 +1,8 @@
 
-function isIE() { return ((navigator.appName == 'Microsoft Internet Explorer') || ((navigator.appName == 'Netscape') && (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null))); }
+function isIE() {
+  return ((navigator.appName === 'Microsoft Internet Explorer') || ((navigator.appName === 'Netscape') &&
+  (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) !== null)));
+}
 
 angular.module('nf-auth', ['ngCookies', 'ngRoute'])
 
@@ -17,7 +20,6 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
   }
 
   function saveCookie (auth) {
-    console.log('Auth', auth);
     $cookieStore.put('auth', auth);
   }
 
@@ -25,24 +27,37 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
     $cookieStore.remove('auth');
   }
 
+  // IE Callback
+  OAuth.callback('github', function(err, result) {
+    if(err) {
+      return console.log(err, result);
+    }
+    console.log('Callback', arguments);
+    saveCookie(result);
+    result.get('/user').done(function (data) {
+      setUser(data);
+    });
+  });
+
+
   return {
-    fbLogin: function (count) {
+    fbLogin: function () {
       OAuth.popup('facebook', function(err, result) {
         if(err) {
           return console.log(err, result);
         }
-        auth = result;
-        // saveCookie(auth);
+        // saveCookie(result);
 
-        auth.get('/me').done(function (data) {
+        result.get('/me').done(function (data) {
           setUser(data);
         });
       });
     },
 
-    ghLogin: function (path) {
+    ghLogin: function () {
       if(isIE()) {
-        OAuth.redirect('github', $location.absUrl());
+        clearCookie();
+        OAuth.redirect('github', 'http://' + $location.host() + '/oauth?next=' + encodeURIComponent($location.path()));
         return;
       }
 
@@ -50,10 +65,10 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
         if(err) {
           return console.log(err, result);
         }
-        auth = result;
-        saveCookie(auth);
+        console.log('Popup', result);
+        saveCookie(result);
 
-        auth.get('/user').done(function (data) {
+        result.get('/user').done(function (data) {
           setUser(data);
         });
       });
@@ -68,7 +83,7 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
       var cookie = $cookieStore.get('auth');
       if(cookie) {
         console.log('Init Auth', cookie);
-        auth = OAuth.create('github', cookie);
+        var auth = OAuth.create('github', cookie);
         auth.get('/user')
         .done(function (data) {
           console.log(data);

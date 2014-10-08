@@ -1,24 +1,32 @@
-
 window.angular.module('nftest', ['ngRoute', 'ngSanitize', 'nf-solr', 'nf-auth'])
 
-.config(function ($httpProvider, $routeProvider) {
+.config(function ($httpProvider, $locationProvider, $routeProvider) {
   $httpProvider.defaults.useXDomain = true;
+  $locationProvider.html5Mode(true);
+  $locationProvider.hashPrefix('!');
 
   $routeProvider
   .when('/', {
     controller: 'IndexCtrl',
-    templateUrl: './partials/index.html',
+    templateUrl: '/partials/index.html',
     resolve: {
       routePrefix: function () { return 'artikler/'; }
     }
   })
   .when('/artikler/:name*', {
     controller: 'ArticleCtrl',
-    templateUrl: './partials/article.html',
+    templateUrl: '/partials/article.html',
     resolve: {
       routePrefix: function () { return 'artikler/'; }
     }
-  });
+  })
+  .when('/oauth', {
+    template: '<div></div>',
+    controller: function ($location, $routeParams) {
+      var next = $routeParams.next || '/';
+     $location.path(next).search('next', null);
+    }
+  })
 })
 
 .run(function ($rootScope, nfAuth) {
