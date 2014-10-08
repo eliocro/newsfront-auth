@@ -1,8 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = {
-  oauthd_url: "https://oauth.io",
-  oauthd_api: "https://oauth.io/api",
-  version: "web-0.1.8",
+  oauthd_url: "http://auth.newsfront.no",
+  oauthd_api: "/api",
+  version: "web-0.2.0",
   options: {}
 };
 
@@ -162,6 +162,7 @@ module.exports = function(window, document, jQuery, navigator) {
         popup: function(provider, opts, callback) {
           var defer, frm, getMessage, res, url, wnd, wndTimeout, wnd_options, wnd_settings, _ref;
           getMessage = function(e) {
+            alert(e);
             if (e.origin !== config.oauthd_base) {
               return;
             }
@@ -182,7 +183,7 @@ module.exports = function(window, document, jQuery, navigator) {
             }
             return callback(new Error("OAuth object must be initialized"));
           }
-          if (arguments.length === 2) {
+          if (arguments.length === 2 && typeof opts === 'function') {
             callback = opts;
             opts = {};
           }
@@ -448,7 +449,7 @@ var Url,
 
 Url = require('../tools/url')();
 
-module.exports = function($, config, client_states, cache, providers_api) {
+module.exports = function($, config, client_states, cache) {
   return {
     http: function(opts) {
       var defer, desc_opts, doRequest, i, options;
@@ -1184,3 +1185,5 @@ module.exports = function(document) {
 };
 
 },{}]},{},[4])
+
+console.log('Custom script');

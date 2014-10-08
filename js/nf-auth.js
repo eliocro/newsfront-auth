@@ -1,4 +1,6 @@
 
+function isIE() { return ((navigator.appName == 'Microsoft Internet Explorer') || ((navigator.appName == 'Netscape') && (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null))); }
+
 angular.module('nf-auth', ['ngCookies', 'ngRoute'])
 
 .run(function () {
@@ -6,7 +8,7 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
   OAuth.initialize('zwjiwmCkqZA1pefdZF1eEUo7zDI');
 })
 
-.factory('nfAuth', function ($rootScope, $route, $cookieStore) {
+.factory('nfAuth', function ($rootScope, $route, $cookieStore, $location) {
 
   function setUser (user) {
     console.log('User', user);
@@ -39,6 +41,11 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
     },
 
     ghLogin: function (path) {
+      if(isIE()) {
+        OAuth.redirect('github', $location.absUrl());
+        return;
+      }
+
       OAuth.popup('github', function(err, result) {
         if(err) {
           return console.log(err, result);
