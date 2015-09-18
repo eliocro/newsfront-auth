@@ -13,6 +13,10 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
     (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) !== null)));
   }
 
+  function isIOs() {
+    return navigator.userAgent.match(/(iPad|iPhone|iPod)/g);
+  }
+
   function setUser (user) {
     console.log('User', user);
     $rootScope.user = user;
@@ -54,8 +58,24 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
       });
     },
 
+    twLogin: function () {
+      console.log('here');
+      OAuth.popup('twitter', function(err, result) {
+        if(err) {
+          return console.log(err, result);
+        }
+        saveCookie(result);
+
+        result.get('/1.1/account/verify_credentials.json').done(function (data) {
+          setUser(data);
+        });
+      });
+    },
+
+
     ghLogin: function () {
-      if(isIE()) {
+      // Workaround for IE (and iOS)
+      if(isIE() || isIOs()) {
         clearCookie();
         OAuth.redirect('github', 'http://' + $location.host() + '/#!/oauth?next=' + encodeURIComponent($location.path()));
         return;
@@ -83,8 +103,15 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
       var cookie = $cookieStore.get('auth');
       if(cookie) {
         console.log('Init Auth', cookie);
-        var auth = OAuth.create('github', cookie);
-        auth.get('/user')
+        // var auth = OAuth.create('github', cookie);
+        // auth.get('/user')
+        // .done(function (data) {
+        //   console.log(data);
+        //   setUser(data);
+        // });
+
+        var auth = OAuth.create('twitter', cookie);
+        auth.get('/1.1/account/verify_credentials.json')
         .done(function (data) {
           console.log(data);
           setUser(data);
