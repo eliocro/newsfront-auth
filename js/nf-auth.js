@@ -23,12 +23,14 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
     $route.reload();
   }
 
-  function saveCookie (auth) {
+  function saveCookie (auth, provider) {
     $cookieStore.put('auth', auth);
+    $cookieStore.put('provider', provider);
   }
 
   function clearCookie () {
     $cookieStore.remove('auth');
+    $cookieStore.remove('provider');
   }
 
   // IE Callback
@@ -37,7 +39,8 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
       return console.log(err, result);
     }
     console.log('Callback', arguments);
-    saveCookie(result);
+    saveCookie(result, 'github');
+
     result.get('/user').done(function (data) {
       setUser(data);
     });
@@ -50,7 +53,7 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
         if(err) {
           return console.log(err, result);
         }
-        // saveCookie(result);
+        saveCookie(result, 'facebook');
 
         result.get('/me').done(function (data) {
           setUser(data);
@@ -59,12 +62,11 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
     },
 
     twLogin: function () {
-      console.log('here');
       OAuth.popup('twitter', function(err, result) {
         if(err) {
           return console.log(err, result);
         }
-        saveCookie(result);
+        saveCookie(result, 'twitter');
 
         result.get('/1.1/account/verify_credentials.json').done(function (data) {
           setUser(data);
@@ -72,6 +74,18 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
       });
     },
 
+    fidLogin: function () {
+      OAuth.popup('frontid', function(err, result) {
+        if(err) {
+          return console.log(err, result);
+        }
+        saveCookie(result, 'frontid');
+
+        result.get('/me').done(function (data) {
+          setUser(data);
+        });
+      });
+    },
 
     ghLogin: function () {
       // Workaround for IE (and iOS)
@@ -85,8 +99,7 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
         if(err) {
           return console.log(err, result);
         }
-        console.log('Popup', result);
-        saveCookie(result);
+        saveCookie(result, 'github');
 
         result.get('/user').done(function (data) {
           setUser(data);
@@ -101,21 +114,37 @@ angular.module('nf-auth', ['ngCookies', 'ngRoute'])
 
     init: function () {
       var cookie = $cookieStore.get('auth');
-      if(cookie) {
+      var provider = $cookieStore.get('provider');
+      if(cookie && provider) {
         console.log('Init Auth', cookie);
-        // var auth = OAuth.create('github', cookie);
-        // auth.get('/user')
-        // .done(function (data) {
-        //   console.log(data);
-        //   setUser(data);
-        // });
 
-        var auth = OAuth.create('twitter', cookie);
-        auth.get('/1.1/account/verify_credentials.json')
-        .done(function (data) {
-          console.log(data);
-          setUser(data);
-        });
+        if(provider === 'github') {
+          var auth = OAuth.create('github', cookie);
+          auth.get('/user')
+          .done(function (data) {
+            console.log(data);
+            setUser(data);
+          });
+        }
+        else if(provider === 'frontid') {
+          var auth = OAuth.create('frontid', cookie);
+          auth.get('/me')
+          .done(function (data) {
+            console.log(data);
+            setUser(data);
+          });
+        }
+        else if(provider === 'twitter') {
+          var auth = OAuth.create('twitter', cookie);
+          auth.get('/1.1/account/verify_credentials.json')
+          .done(function (data) {
+            console.log(data);
+            setUser(data);
+          });
+        }
+        else {
+          console.log('Unkown provider');
+        }
       }
     }
   };

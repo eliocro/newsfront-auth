@@ -42,6 +42,9 @@ window.angular.module('nftest', ['ngRoute', 'ngSanitize', 'nf-solr', 'nf-auth'])
   $rootScope.twLogin = function () {
     nfAuth.twLogin();
   };
+  $rootScope.fidLogin = function () {
+    nfAuth.fidLogin();
+  };
   $rootScope.logout = function () {
     nfAuth.logout();
   };
